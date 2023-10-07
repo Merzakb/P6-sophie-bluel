@@ -186,3 +186,45 @@ footer nav ul {
 	margin: 2em
 }
 
+
+/* CODE AJOUTE*/
+
+/* btn catégorie*/
+#btns-categories {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 0.6rem;
+    margin: 3.19rem;
+}
+
+.btn-category-filter {
+    color: #1D6154;
+    text-align: center;
+    font-family: Syne;
+    font-size: 1rem;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    border-radius: 3.75rem;
+    border: 1px solid #1D6154;
+    background-color: #fff;
+    padding: 0.59rem 0.88rem;
+    min-width: 6.25rem;
+}
+
+ .btn-category-selected{
+   color: #fff;
+    background-color: #1D6154;
+} 
+
+/* erreur*/
+.alertError {
+    grid-column-start: 1;
+    grid-column-end: 4;
+    width: 100%;;
+    color: red;
+    text-align: center;
+    font-size: 1rem;
+    margin: auto;
+}
