@@ -6,6 +6,7 @@ const works = await getWorks() //[] de work
 const BtnsCategories = document.querySelector("#btns-categories") //élement qui contient tous les boutons catégories
 const btnTous = document.createElement("button")//bouton tous
 let btnCategoryFilter // les autres boutons des catégories
+const loginBtn =  document.querySelector(".log-in-out")//btn login/logout
 
 //fonction principale
 function main(){
@@ -131,7 +132,38 @@ function categoryListName(){
 }
 
 
+/*************************/
+/*MODE EDITION */
+/*************************/
+//fonction pour exécuter le mode édition
+window.onload = () => {
+	//récupérer le token
+	let userId = localStorage.getItem('userId')
+	let token = localStorage.getItem('token')
+	if (userId && token) {
+		loginBtn.textContent = 'logout'//changer le text du bouton login en logout
+		editionMode()
+		logOut()
+	}
+}
 
+//afficher le mode édition
+function editionMode() {
+	loginBtn.textContent = 'logout'
+	const bannerEdit = document.createElement("div")
+	bannerEdit.innerHTML = `<i class="fa-regular fa-pen-to-square"></i>  Mode édition`
+	bannerEdit.classList.add("banner-edit")
+	document.body.prepend(bannerEdit)
+	BtnsCategories.innerHTML = ``
+	document.querySelector("#projects").innerHTML = `<div class="edit-project"><h2>Mes Projets</h2> <span class="edit"><i class="fa-regular fa-pen-to-square"></i>  Modifier</span></div>`
+}
 
-
+//fonction pour se déconnecter
+function logOut() {
+	loginBtn.addEventListener('click', () => {
+		localStorage.removeItem('userId')
+		localStorage.removeItem('token')
+		window.location.href = 'login.html'
+	})
+}
 

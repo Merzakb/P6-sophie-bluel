@@ -52,6 +52,7 @@ body {
 	margin:auto;
 	font-family: 'Work Sans' ;
 	font-size: 14px;
+    background-color: #FFFEF8;;
 }
 header {
 	display: flex;
@@ -226,5 +227,44 @@ footer nav ul {
     color: red;
     text-align: center;
     font-size: 1rem;
-    margin: auto;
+    margin-top: 1rem;
+}
+
+
+/* EDITION MODE*/
+/* Login*/
+nav a {
+    text-decoration: none;
+    color: #000;
+}
+nav a:hover {
+	color: #B1663C;
+}
+.active {
+    font-weight: 600;
+}
+
+.banner-edit {
+    width: 100%;
+    height: 3.6875rem;
+    font-size: 1rem;
+    color: #fff;
+    background-color: #000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.fa-pen-to-square{
+    margin-right: 0.5rem;
+}
+
+.edit-project{
+    display: flex;
+    justify-content: center;
+    align-items: baseline;
+}
+.edit{
+    color: #000;
+    font-size: 0.875rem;
+    margin-left: 1.5rem;
 }
