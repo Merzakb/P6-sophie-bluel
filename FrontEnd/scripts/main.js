@@ -1,5 +1,4 @@
-import { alertErrors, showWorks } from "./dom.js"
-
+import { alertErrors, showWorks, showWorksOnModal } from "./dom.js"
 
 //initialisation
 const works = await getWorks() //[] de work
@@ -7,6 +6,10 @@ const BtnsCategories = document.querySelector("#btns-categories") //élement qui
 const btnTous = document.createElement("button")//bouton tous
 let btnCategoryFilter // les autres boutons des catégories
 const loginBtn =  document.querySelector(".log-in-out")//btn login/logout
+const btnEdit = document.querySelector(".edit")
+
+const modal = document.querySelector("#modal")
+const btnExit = document.querySelector(".modal-wrapper-exit")
 
 //fonction principale
 function main(){
@@ -136,16 +139,17 @@ function categoryListName(){
 /*MODE EDITION */
 /*************************/
 //fonction pour exécuter le mode édition
-window.onload = () => {
-	//récupérer le token
+window.addEventListener("load", ()=>{
+	//récupérer le token 
 	let userId = localStorage.getItem('userId')
 	let token = localStorage.getItem('token')
-	if (userId && token) {
+	if (token) {
 		loginBtn.textContent = 'logout'//changer le text du bouton login en logout
 		editionMode()
 		logOut()
+        displayModal()  
 	}
-}
+})
 
 //afficher le mode édition
 function editionMode() {
@@ -155,7 +159,8 @@ function editionMode() {
 	bannerEdit.classList.add("banner-edit")
 	document.body.prepend(bannerEdit)
 	BtnsCategories.innerHTML = ``
-	document.querySelector("#projects").innerHTML = `<div class="edit-project"><h2>Mes Projets</h2> <span class="edit"><i class="fa-regular fa-pen-to-square"></i>  Modifier</span></div>`
+    btnEdit.classList.add("active")
+	
 }
 
 //fonction pour se déconnecter
@@ -167,3 +172,58 @@ function logOut() {
 	})
 }
 
+/***********************/
+/*********Modal********/
+/***********************/
+function displayModal() {
+    btnEdit.addEventListener("click", (e) => {
+        e.preventDefault()
+        modal.classList.add("active")
+        modal.removeAttribute("aria-hidden")
+        modal.setAttribute("aria-modal", "true")
+        document.body.classList.add('no-scroll')
+        displayModalWorks()
+        maskModal()
+    })
+}
+
+//fonction pour fermer la modal
+function maskModal() {
+    //fermer la modal via le bouton 
+    btnExit.addEventListener("click", (e) => {
+        e.preventDefault()
+        e.stopPropagation()
+        closeModal()
+    })
+    //fermer la modal en cliquant en dehors de la div modal-wrapper
+    window.addEventListener("click", (e) => {
+        e.preventDefault()
+        if (e.target === modal) {
+            closeModal()
+        }
+    })
+    //fermer la modal avec le clavier "echap"
+    window.addEventListener("keydown", (e) => {
+        e.preventDefault()
+        if (e.key === "Escape" || e.key === "ESC") {
+            closeModal()
+        }
+    })
+}
+function closeModal(){
+    modal.classList.remove("active")
+    modal.setAttribute("aria-hidden", "true")
+    modal.removeAttribute("aria-modal")
+    document.body.classList.remove('no-scroll')
+}
+
+//afficher les photos des works sur la modal
+async function displayModalWorks() {
+    try {
+      for (const work of works) {
+		showWorksOnModal(work)
+      }
+    } catch (error) {
+       alertErrors(error)
+    }
+}

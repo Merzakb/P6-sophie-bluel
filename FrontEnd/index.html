@@ -36,13 +36,28 @@
 			<p>En cas de besoin, une équipe pluridisciplinaire peut-être constituée : architecte DPLG, décorateur(trice)</p>
 		</article>
 	</section>
+    <!-- modale -->
+    <aside id="modal" class="modal" aria-hidden="true" role="dialog" aria-modal="false" aria-labelledby="title-modal">
+        <div class="modal-wrapper">
+            <p class="modal-wrapper-exit">X</p>
+            <p id="title-modal" class="modal-wrapper-title">Galerie photo</p>
+            <div class="modal-wrapper-gallery">
+            </div>
+            <hr>
+            <button  class="btn add-works">Ajouter une photo</button>
+        </div>
+    </aside>
 	<section id="portfolio">
-		<h2 id="projects">Mes Projets</h2>
+		<!-- <h2 id="projects">Mes Projets</h2> -->
+        <div class="edit-project"><h2>Mes Projets</h2> <span class="edit"><i class="fa-regular fa-pen-to-square"></i>  Modifier</span></div>
+        <!-- btns "tous" et btn catégories -->
         <div id="btns-categories">
         </div>
+        <!-- pour afficher les works -->
 		<div class="gallery">
 		</div>
 	</section>
+    
 	<section id="contact">
 		<h2>Contact</h2>
 		<p>Vous avez un projet ? Discutons-en !</p>
