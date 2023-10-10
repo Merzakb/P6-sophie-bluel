@@ -1,16 +1,24 @@
 import { alertErrors, showWorks, showWorksOnModal } from "./dom.js"
 
-//initialisation
+/*************************************
+*********** initialisation************
+**************************************/
+const urlWorks = `http://localhost:5678/api/works`
 const works = await getWorks() //[] de work
 const BtnsCategories = document.querySelector("#btns-categories") //élement qui contient tous les boutons catégories
 const btnTous = document.createElement("button")//bouton tous
 let btnCategoryFilter // les autres boutons des catégories
 const loginBtn =  document.querySelector(".log-in-out")//btn login/logout
 const btnEdit = document.querySelector(".edit")
+//edit
+const userId = localStorage.getItem('userId')
+const token = localStorage.getItem('token')
 //modal
 let modal
 const btnExit = document.querySelector(".modal-wrapper-exit")
-let btnsDeleteWork = document.querySelectorAll(".fa-trash-can")
+let btnsDeleteWork
+const deleteErrorMessage = document.getElementById("delete-error-message")
+const deleteSuccessMessage = document.getElementById("delete-success-message")
 
 //fonction principale
 function main(){
@@ -26,7 +34,7 @@ main()
 async function getWorks() {
     try {
       // on récupère les projets de l'API
-      const response = await fetch(`http://localhost:5678/api/works`)
+      const response = await fetch(urlWorks)
       // convertir la reponse en json et la retourner
     	const works = await response.json();
       return works;
@@ -142,8 +150,6 @@ function categoryListName(){
 //fonction pour exécuter le mode édition
 window.addEventListener("load", ()=>{
 	//récupérer le token 
-	let userId = localStorage.getItem('userId')
-	let token = localStorage.getItem('token')
 	if (token) {
 		loginBtn.textContent = 'logout'//changer le text du bouton login en logout
 		editionMode()
@@ -223,6 +229,8 @@ function closeModal(){
     modal.setAttribute("aria-hidden", "true")
     modal.removeAttribute("aria-modal")
     document.body.classList.remove('no-scroll')
+    deleteSuccessMessage.textContent = ""
+    deleteErrorMessage.textContent = ""
 }
 
 //afficher les photos des works sur la modal
@@ -234,4 +242,47 @@ async function displayModalWorks() {
     } catch (error) {
        alertErrors(error)
     }
+}
+
+/**********************************/
+/*AJOUT ET SUPPRESSION DES WORKS */
+/**********************************/
+//supprimer un works
+function deleteWork() {
+    btnsDeleteWork = document.querySelectorAll(".fa-trash-can")
+    btnsDeleteWork.forEach(btn => {
+        //on récupère l'id du btn delete qui correspond à l'id du work
+        let btnDataId = btn.getAttribute('data-id')
+        btn.addEventListener("click", (e) => {
+            deleteRequest(btnDataId)
+            e.preventDefault()
+        })
+    }) 
+}
+
+/**
+ * @param {Number} id 
+ */
+function deleteRequest(id) {
+    const urlDelete = `http://localhost:5678/api/works/${id}`
+    fetch(urlDelete, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+        throw new Error(`Erreur serveur, statut : ${response.status}`);
+        }
+        return response.json()
+    })
+    .then(data => {
+        deleteSuccessMessage.textContent = `L'élément avec l'id: ${id} est supprimé avec succès`
+        console.log(`L'élément avec l'id: ${id} est supprimé avec succès`)
+    })
+    .catch(error => {
+        deleteSuccessMessage.textContent = `Erreur lors de la suppression de l\'élément avec l'id: ${id}, erreur : ${error}`
+    });
 }

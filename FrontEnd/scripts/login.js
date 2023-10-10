@@ -17,12 +17,13 @@ submitLogin()
  * @param {string} password 
  */
 function adminLogin (email, password) {
+    const urlLogin = "http://localhost:5678/api/users/login"
     const data = {
         email : email,
         password : password
     }
     
-    fetch("http://localhost:5678/api/users/login", {
+    fetch(urlLogin, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data)

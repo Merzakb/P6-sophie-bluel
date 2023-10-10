@@ -35,6 +35,7 @@ export function showWorksOnModal(work) {
    
     modalFigure.classList.add("img-container")
     deleteWork.classList.add("fa-solid", "fa-trash-can")
+    deleteWork.dataset.id = work.id
     modalWorkImage.src = work.imageUrl
     modalWorkImage.alt = work.title
 
