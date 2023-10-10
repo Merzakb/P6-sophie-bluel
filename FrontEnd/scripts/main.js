@@ -7,9 +7,10 @@ const btnTous = document.createElement("button")//bouton tous
 let btnCategoryFilter // les autres boutons des catégories
 const loginBtn =  document.querySelector(".log-in-out")//btn login/logout
 const btnEdit = document.querySelector(".edit")
-
-const modal = document.querySelector("#modal")
+//modal
+let modal
 const btnExit = document.querySelector(".modal-wrapper-exit")
+let btnsDeleteWork = document.querySelectorAll(".fa-trash-can")
 
 //fonction principale
 function main(){
@@ -178,12 +179,17 @@ function logOut() {
 function displayModal() {
     btnEdit.addEventListener("click", (e) => {
         e.preventDefault()
+        //condition créer et afficher une seule une instance de la modal
+        if (!modal) {
+            modal  = document.querySelector("#modal") 
+            modal.removeAttribute("aria-hidden")
+            modal.setAttribute("aria-modal", "true")
+            document.body.classList.add('no-scroll')
+            displayModalWorks()
+            maskModal()
+            deleteWork()
+        }
         modal.classList.add("active")
-        modal.removeAttribute("aria-hidden")
-        modal.setAttribute("aria-modal", "true")
-        document.body.classList.add('no-scroll')
-        displayModalWorks()
-        maskModal()
     })
 }
 
@@ -191,9 +197,11 @@ function displayModal() {
 function maskModal() {
     //fermer la modal via le bouton 
     btnExit.addEventListener("click", (e) => {
-        e.preventDefault()
-        e.stopPropagation()
-        closeModal()
+        if (modal) {
+            e.preventDefault()
+            e.stopPropagation()
+            closeModal()
+        }
     })
     //fermer la modal en cliquant en dehors de la div modal-wrapper
     window.addEventListener("click", (e) => {
