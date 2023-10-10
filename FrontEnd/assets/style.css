@@ -185,9 +185,9 @@ footer nav ul {
 	margin: 2em
 }
 
-
+/********************************************************************************************/
 /* CODE AJOUTE*/
-
+/********************************************************************************************/
 /* btn catégorie*/
 #btns-categories {
     display: flex;
@@ -269,8 +269,9 @@ nav a:hover {
     display: none;
 }
 
-
+/********************************************************************************************/
 /*Modale*/
+/********************************************************************************************/
 .modal {
     position: fixed;
     display: none;
@@ -289,21 +290,28 @@ nav a:hover {
 .active{
     display: flex !important;
 }
-.modal-wrapper {
+.desactive{
+    display: none !important;
+}
+#modal-delete{
+    width: 40rem;
+    height: auto;
+    font-size: 1rem;
+    background-color: #fff;
+    color: #000;
+    overflow: auto;
+    z-index: 11;
     display: flex;
     flex-flow: column wrap;
     justify-content: center;
     align-items: center;
-    width: 40rem;
     padding: 1rem;
     gap: 2rem;
-    font-size:1rem;
-    background-color: #fff;
-    color: "000";
-    overflow:auto;
-    z-index: 11;
+    position: absolute; 
+    top: 2rem;
+    left: 27%;
+    right: 27%;
 }
-
 .modal-wrapper-gallery{
     justify-content: center;
     display: grid;
@@ -353,7 +361,7 @@ hr{
     background: #B3B3B3;
 }
 
-.add-works{
+.btn-add-work{
     width: 14.8125rem;
     height: 2.25rem;
     flex-shrink: 0;
@@ -361,7 +369,7 @@ hr{
     background: #1D6154;
     color: #fff;
     text-align: center;
-    font-family: Syne;
+    font-family: "Syne";
     font-size: 0.875rem;
     font-style: normal;
     font-weight: 700;
@@ -372,4 +380,135 @@ hr{
 
 .no-scroll {
     overflow: hidden;
+}
+
+/* Formulaire ajout photo */
+#modal-add{
+    display: flex;
+    flex-flow: column wrap;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+    gap: 1rem;
+    width: 40rem;
+    height: auto;
+    font-size: 1rem;
+    background-color: #fff;
+    color: #000;
+    overflow: auto;
+    z-index: 11;
+    position: absolute; 
+    top: 2rem;
+    left: 27%;
+    right: 27%;
+}
+.form-mask{
+    font-size: 1.5rem;
+    font-weight: 700;
+    position: relative;
+    width: 100%;
+}
+.form--mask-back{
+    position: absolute;
+    left: 0;
+    cursor: pointer;
+}
+.form-mask-exit{
+    position: absolute;
+    right: 0;
+    cursor: pointer;
+}
+.modal-form{
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    width: 26rem;
+}
+input[type="file"] {
+    display: none;
+}
+  
+
+.custom-upload-btn {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 0.44rem;
+    height: 10.5625rem;
+    width: 100%;
+    border-radius: 0.1875rem;
+    background: #E8F1F6;
+    color:#B9C5CC;
+    border: none;
+    cursor: pointer;
+}
+
+.fa-image{
+    width: 4.75rem;
+    height: 4.75rem;
+    font-size: 4.75rem;
+    color: #B9C5CC;
+}
+.add-img-btn{
+    width: 10.8125rem;
+    height: 2.25rem;
+    border-radius: 3.125rem;
+    background: #CBD6DC;
+    display: flex;
+    align-items:center;
+    justify-content:center;
+    color: #306685;
+    text-align: center;
+    font-family: "Work Sans";
+    font-size: 0.875rem;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+}
+.limit{
+    color: #444;
+    text-align: center;
+    font-family: Work Sans;
+    font-size: 0.625rem;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+  .custom-file-name {
+    font-size: 1rem;
+    margin-left: 10px;
+}
+.form-label{
+    width: auto;
+    height: 3.1875rem;
+    background: #FFF;
+    box-shadow: 0px 4px 14px 0px rgba(0, 0, 0, 0.09);
+    border: none;
+}
+input[type="text"], select {
+    color: #444;
+    font-family: "Work Sans";
+    font-size: 0.875rem;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    padding: 0 0.5rem;
+}
+.btn-valid{
+    width: 14.8125rem;
+    height: 2.25rem;
+    flex-shrink: 0;
+    border-radius: 3.75rem;
+    background: #A7A7A7;;
+    color: #fff;
+    text-align: center;
+    font-family: "Syne";
+    font-size: 0.875rem;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    border: none;
+    margin-bottom: 3rem;
+    align-self: center;
 }

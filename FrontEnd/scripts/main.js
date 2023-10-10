@@ -154,7 +154,7 @@ window.addEventListener("load", ()=>{
 		loginBtn.textContent = 'logout'//changer le text du bouton login en logout
 		editionMode()
 		logOut()
-        displayModal()  
+        displayModal()
 	}
 })
 
@@ -191,9 +191,12 @@ function displayModal() {
             modal.removeAttribute("aria-hidden")
             modal.setAttribute("aria-modal", "true")
             document.body.classList.add('no-scroll')
-            displayModalWorks()
-            maskModal()
-            deleteWork()
+            displayModalWorks()//afficher les photos des works dans la modal
+            maskModal()//fermer la modal
+            deleteWork()//supprimer un work
+            openModalAdd()//ouvrir le formulaire pour ajouter un work
+            backToInitialModal()//revenir vers la modale initiale
+            maskFormModal()//fermer la modale à partir du formulaire d'ajout d'un work
         }
         modal.classList.add("active")
     })
@@ -201,7 +204,7 @@ function displayModal() {
 
 //fonction pour fermer la modal
 function maskModal() {
-    //fermer la modal via le bouton 
+    //fermer la modal via le bouton X
     btnExit.addEventListener("click", (e) => {
         if (modal) {
             e.preventDefault()
@@ -231,16 +234,18 @@ function closeModal(){
     document.body.classList.remove('no-scroll')
     deleteSuccessMessage.textContent = ""
     deleteErrorMessage.textContent = ""
+    modalAdd.classList.add("desactive")
+    modalAdd.classList.remove("active")
 }
 
 //afficher les photos des works sur la modal
 async function displayModalWorks() {
     try {
-      for (const work of works) {
-		showWorksOnModal(work)
-      }
+        for (const work of works) {
+            showWorksOnModal(work)
+        }
     } catch (error) {
-       alertErrors(error)
+        alertErrors(error)
     }
 }
 
@@ -274,7 +279,7 @@ function deleteRequest(id) {
     })
     .then(response => {
         if (!response.ok) {
-        throw new Error(`Erreur serveur, statut : ${response.status}`);
+        throw new Error(`Erreur serveur, statut : ${response.status}`)
         }
         return response.json()
     })
@@ -284,5 +289,44 @@ function deleteRequest(id) {
     })
     .catch(error => {
         deleteSuccessMessage.textContent = `Erreur lors de la suppression de l\'élément avec l'id: ${id}, erreur : ${error}`
-    });
+    })
+}
+
+//ajouter un work
+const modalDelete = document.getElementById("modal-delete")
+const modalAdd = document.getElementById("modal-add")
+const addPicture = document.getElementById("add-picture")
+const btnModalBack = document.querySelector(".fa-arrow-left")
+const btnCloseFormModal = document.querySelector(".fa-x")
+
+//fonction pour ouvrir le formulaire ajout d'une image
+function openModalAdd() {
+    addPicture.addEventListener("click", (e) => {
+        e.preventDefault()
+        modalAdd.classList.remove("desactive")
+        modalAdd.classList.add("active")
+        modalDelete.classList.add("desactive")
+        modalDelete.classList.remove("desactive")
+    })
+}
+
+//fonction pour fermer le formulaire et revenir vers le modal initial
+function backToInitialModal() {
+    btnModalBack.addEventListener("click", (e) => {
+        e.preventDefault()
+        console.log("ok");
+        modalAdd.classList.add("desactive")
+        modalAdd.classList.remove("active")
+    })
+}
+
+//fermer totalement la modal
+function maskFormModal(){
+    btnCloseFormModal.addEventListener("click", (e) => {
+        if (modal) {
+            e.preventDefault()
+            e.stopPropagation()
+            closeModal()
+        }
+    })
 }
