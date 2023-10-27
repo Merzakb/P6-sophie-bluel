@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w==" crossorigin="anonymous" referrerpolicy="no-referrer">
 	<meta name="description" content="">
 	<link rel="stylesheet" href="./assets/style.css">
-    <script src="scripts/main.js" type="module"></script>
+    <script src="scripts/main.js" defer></script>
 </head>
 <body>
 <header>
@@ -60,6 +60,27 @@
 			<input type="submit" value="Envoyer">
 		</form>
 	</section>
+     <!-- formulaire test  -->
+    <div id="formTest">
+        <p id="title-modal-form" class="modal-wrapper-title">Ajout photo</p>
+        <form action="http://localhost:5678/api/works" method="post" class="modal-form">
+            <label class="custom-upload-btn">
+                <i class="fa-regular fa-image"></i>
+                <span class="add-img-btn"> + Ajouter photo</span>
+                <span class="limit">jpg, png : 4mo max</span>
+                <input type="file" name="file" id="file" accept="image/png, image/jpeg">
+              </label>
+            <label for="title">Titre</label>
+            <input class="form-input" type="text" name="title" id="title">
+            <label for="category-select">catégorie</label>
+            <select class="form-input" name="categories" id="category-select">
+                <option value=""></option>
+            </select>
+            <hr>
+            <button class="btn-valid" type="submit">Valider</button>
+        </form>
+    </div> 
+    <!-- fin du formulaire test  -->
 </main>
 
 <footer>
@@ -70,7 +91,8 @@
 	</nav>
 </footer>
 <!-- modale -->
-<aside id="modal" class="modal" aria-hidden="true" role="dialog" aria-modal="false" aria-labelledby="title-modal">
+<!-- <aside id="modal" class="modal" aria-hidden="true" role="dialog" aria-modal="false" aria-labelledby="title-modal"> -->
+<aside id="modal" class="modal">
         <div id="modal-delete" class="">
             <p class="modal-wrapper-exit">X</p>
             <p id="title-modal" class="modal-wrapper-title">Galerie photo</p>
@@ -81,34 +103,28 @@
             <div class="alertError" id="delete-error-message"></div>
             <button id="add-picture" class="btn btn-add-work">Ajouter une photo</button>
         </div>
+
         <div id="modal-add" class="desactive">
-            <p class="form-mask" ><span class="form--mask-back"><i class="fa-solid fa-arrow-left"></i></span> <span class="form-mask-exit"><i class="fa-solid fa-x"></i></span></p>
+             <p class="form-mask" ><span class="form--mask-back"><i class="fa-solid fa-arrow-left"></i></span> <span class="form-mask-exit"><i class="fa-solid fa-x"></i></span></p>
             <p id="title-modal-form" class="modal-wrapper-title">Ajout photo</p>
             <form action="#" method="post" class="modal-form">
                 <label class="custom-upload-btn">
                     <i class="fa-regular fa-image"></i>
-                    <div class="add-img-btn"> + Ajouter photo</div>
+                    <span class="add-img-btn"> + Ajouter photo</span>
                     <span class="limit">jpg, png : 4mo max</span>
                     <input type="file" name="file" id="file" accept="image/png, image/jpeg" maxlength="4194304">
                   </label>
                   <span class="custom-file-name"></span>
                 <label for="title">Titre</label>
-                <input class="form-label" type="text" name="title" id="title">
+                <input class="form-input" type="text" name="title" id="title">
                 <label for="category-select">catégorie</label>
-                <select class="form-label" name="categories" id="category-select">
+                <select class="form-input" name="categories" id="category-select">
                     <option value=""></option>
-                    <option value="1">Objet</option>
-                    <option value="2">Appartement</option>
-                    <option value="3">Bar &restaurant</option>
                 </select>
                 <hr>
-                <button class="btn-valid" type="submit"><Var>Valider</Var></button>
-            </form>
+                <button class="btn-valid" type="submit">Valider</button>
+            </form> 
         </div> 
-</aside>
-<!-- modale formulaire -->
-<aside class="modal" aria-hidden="true" role="dialog" aria-modal="false" aria-labelledby="title-modal-form">
-    
 </aside>
 </body>
 </html>

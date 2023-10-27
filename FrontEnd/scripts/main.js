@@ -1,10 +1,9 @@
-import { alertErrors, showWorks, showWorksOnModal } from "./dom.js"
 
 /*************************************
 *********** initialisation************
 **************************************/
 const urlWorks = `http://localhost:5678/api/works`
-const works = await getWorks() //[] de work
+let works
 const BtnsCategories = document.querySelector("#btns-categories") //élement qui contient tous les boutons catégories
 const btnTous = document.createElement("button")//bouton tous
 let btnCategoryFilter // les autres boutons des catégories
@@ -22,12 +21,15 @@ const deleteSuccessMessage = document.getElementById("delete-success-message")
 
 //fonction principale
 function main(){
-	displayWorks(works)
-	displayWorksByCategory()
+    getWorks()
+    getCategories()
+    login()
 }
 main()
 
-
+/******************************************************************************************/
+/*AFFICHER LES WORKS ET FILTRER PAR CATEGORIE*/ 
+/******************************************************************************************/
 /**
  * @returns {Array} de tous les works
  */
@@ -36,8 +38,9 @@ async function getWorks() {
       // on récupère les projets de l'API
       const response = await fetch(urlWorks)
       // convertir la reponse en json et la retourner
-    	const works = await response.json();
-      return works;
+    	works = await response.json()
+        displayWorks(works)
+        displayWorksByCategory()
     } catch (error) {
         alertErrors(error)
     }
@@ -84,6 +87,35 @@ function displayWorksByCategory() {
 			displayWorks(worksFiltered)
 		})	
 	}
+}
+
+//fonction pour afficher un work
+/**
+ * @param {object} work objet d'un seul work
+ */
+function showWorks(work) {
+    const gallery = document.querySelector(".gallery")
+    const figure = document.createElement("figure")
+    const workImage = document.createElement("img")
+    const workTitle = document.createElement("figcaption")
+   
+    workImage.classList.add("work-image")
+    workTitle.classList.add("work-title")
+    workImage.src = work.imageUrl
+    workImage.alt = work.title
+    workTitle.innerText = work.title
+
+    gallery.append(figure)
+    figure.append(workImage)
+    figure.append(workTitle)
+}
+
+//focntion pour afficher les erreurs serveurs
+function alertErrors(){
+    const alertError = document.createElement("div")
+    alertError.classList.add("alertError")
+    alertError.innerText = ` Erreur serveur, impossible de charger les élements`
+    document.querySelector(".gallery").prepend(alertError)
 }
 
 //créer le bouton "tous" pour afficher tous les works
@@ -144,11 +176,11 @@ function categoryListName(){
 }
 
 
-/*************************/
-/*MODE EDITION */
-/*************************/
+/******************************************************************************************/
+/*MODE EDITION - CONNEXION ET DECONNEXION*/
+/******************************************************************************************/
 //fonction pour exécuter le mode édition
-window.addEventListener("load", ()=>{
+function login(){
 	//récupérer le token 
 	if (token) {
 		loginBtn.textContent = 'logout'//changer le text du bouton login en logout
@@ -156,7 +188,7 @@ window.addEventListener("load", ()=>{
 		logOut()
         displayModal()
 	}
-})
+}
 
 //afficher le mode édition
 function editionMode() {
@@ -172,16 +204,17 @@ function editionMode() {
 
 //fonction pour se déconnecter
 function logOut() {
-	loginBtn.addEventListener('click', () => {
+	loginBtn.addEventListener('click', (e) => {
+        e.preventDefault()
 		localStorage.removeItem('userId')
 		localStorage.removeItem('token')
-		window.location.href = 'login.html'
+		window.location.href = 'index.html'
 	})
 }
 
-/***********************/
-/*********Modal********/
-/***********************/
+/******************************************************************************************/
+/********* Modal 1 - OUVRIR ET FERMER LA MODALE ET SUPPRIMER UN WORK********/
+/******************************************************************************************/
 function displayModal() {
     btnEdit.addEventListener("click", (e) => {
         e.preventDefault()
@@ -195,8 +228,8 @@ function displayModal() {
             maskModal()//fermer la modal
             deleteWork()//supprimer un work
             openModalAdd()//ouvrir le formulaire pour ajouter un work
-            backToInitialModal()//revenir vers la modale initiale
-            maskFormModal()//fermer la modale à partir du formulaire d'ajout d'un work
+           // backToInitialModal()//revenir vers la modale initiale
+           // maskFormModal()//fermer la modale à partir du formulaire d'ajout d'un work
         }
         modal.classList.add("active")
     })
@@ -249,9 +282,23 @@ async function displayModalWorks() {
     }
 }
 
-/**********************************/
-/*AJOUT ET SUPPRESSION DES WORKS */
-/**********************************/
+function showWorksOnModal(work) {
+    const modalGallery = document.querySelector(".modal-wrapper-gallery")
+    const modalFigure = document.createElement("div")
+    const modalWorkImage = document.createElement("img")
+    const deleteWork = document.createElement("i")
+   
+    modalFigure.classList.add("img-container")
+    deleteWork.classList.add("fa-solid", "fa-trash-can")
+    deleteWork.dataset.id = work.id
+    modalWorkImage.src = work.imageUrl
+    modalWorkImage.alt = work.title
+
+    modalGallery.appendChild(modalFigure)
+    modalFigure.appendChild(modalWorkImage)
+    modalFigure.appendChild(deleteWork)
+}
+
 //supprimer un works
 function deleteWork() {
     btnsDeleteWork = document.querySelectorAll(".fa-trash-can")
@@ -291,17 +338,18 @@ function deleteRequest(id) {
         deleteSuccessMessage.textContent = `Erreur lors de la suppression de l\'élément avec l'id: ${id}, erreur : ${error}`
     })
 }
-
-//ajouter un work
+/******************************************************************************************/
+/********* Modal 2 - OUVRIR ET FERMER LA MODALE ET AJOUTER UN WORK********/
+/******************************************************************************************/
 const modalDelete = document.getElementById("modal-delete")
 const modalAdd = document.getElementById("modal-add")
-const addPicture = document.getElementById("add-picture")
+const btnAddPicture = document.getElementById("add-picture")
 const btnModalBack = document.querySelector(".fa-arrow-left")
 const btnCloseFormModal = document.querySelector(".fa-x")
 
 //fonction pour ouvrir le formulaire ajout d'une image
 function openModalAdd() {
-    addPicture.addEventListener("click", (e) => {
+    btnAddPicture.addEventListener("click", (e) => {
         e.preventDefault()
         modalAdd.classList.remove("desactive")
         modalAdd.classList.add("active")
@@ -314,7 +362,7 @@ function openModalAdd() {
 function backToInitialModal() {
     btnModalBack.addEventListener("click", (e) => {
         e.preventDefault()
-        console.log("ok");
+        console.log("backToInitialModal()");
         modalAdd.classList.add("desactive")
         modalAdd.classList.remove("active")
     })
@@ -324,9 +372,151 @@ function backToInitialModal() {
 function maskFormModal(){
     btnCloseFormModal.addEventListener("click", (e) => {
         if (modal) {
+            console.log("ok");
             e.preventDefault()
             e.stopPropagation()
             closeModal()
         }
     })
 }
+
+/************** Ajouter un work ***************/
+//ajouter les catégories via l'api à l'input select
+async function getCategories() {
+    try {
+      const response = await fetch("http://localhost:5678/api/categories")
+    	const categories = await response.json()
+        displayCategories(categories)
+        console.log(categories );
+        return categories
+    } catch (error) {
+        alertErrors(error)
+    }
+}
+
+
+async function displayCategories(categories) {
+    try {
+      for (const category of categories) {
+		const categoryOption = document.createElement("option")
+        categoryOption.setAttribute("value", category.id)
+        categoryOption.textContent = category.name
+        document.querySelector("#category-select").appendChild(categoryOption)
+      }
+    } catch (error) {
+       console.error()
+    }
+}
+
+
+/**form test */
+const newImageFile = document.querySelector("#file") 
+const newImageTitle =  document.querySelector("#title")
+const newImageCategory =  document.querySelector("#category-select")
+const btnSubmitNewWork = document.querySelector(".btn-valid")
+const uploadedFileLabel = document.querySelector(".custom-upload-btn")
+const imgMiniature = document.createElement("img")
+imgMiniature.classList.add("img-miniature")
+
+//fonction pour voir si les champs sont remplis ou non
+function checkFieldsFull() {
+    const imgFiled = newImageFile.value !== ''
+    const titleField = newImageTitle.value !== ''
+    const selectField = newImageCategory.value !== ''
+
+    return imgFiled && titleField && selectField
+}
+
+//fonction pour activer ou désactiver le bouton submit
+function activeSubmitBtn() {
+    btnSubmitNewWork.disabled = !checkFieldsFull();
+    btnSubmitNewWork.style.backgroundColor = checkFieldsFull() ? '#1D6154' : '#A7A7A7'
+}
+
+/*******Ajoutez des écouteurs d'événements à tous les champs******/
+//focntion pour afficher l'image uploadée avant de l'envoyer
+newImageFile.addEventListener('change', function() {
+    const file = this.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            imgMiniature.src = e.target.result
+        }
+        uploadedFileLabel.textContent = ""
+        uploadedFileLabel.appendChild(imgMiniature)
+        reader.readAsDataURL(file);
+        activeSubmitBtn()
+    }
+    return file
+})
+
+
+newImageTitle.addEventListener('input', activeSubmitBtn());
+newImageCategory.addEventListener('change', activeSubmitBtn());
+
+//envoyer le work
+btnSubmitNewWork.addEventListener("submit", (e)=>{
+    e.preventDefault()
+    createWork()
+})
+
+
+//fonction pour créer un nouveau work
+/*
+function createWork() {
+    const formData = new FormData();
+    formData.append('image', newImageFile.files[0])
+    formData.append('title', newImageTitle.value)
+    formData.append('category', newImageCategory.value)
+    console.log(formData);
+    fetch(urlWorks, {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'multipart/form-data' 
+        },
+        body: formData
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`Erreur HTTP, statut ${response.status}`)
+        }
+        return response.json()
+    })
+    .then(data => {
+        console.log('Données envoyées avec succès:', data)
+    })
+    .catch(error => {
+        console.error('Erreur lors de l\'envoi des données:', error)
+    })
+}
+
+*/
+function createWork() {
+    const reader = new FileReader();
+    reader.onload = function() {
+        let binaryString = reader.result;
+        
+        const formData = new FormData();
+    
+        formData.append('image',  btoa(binaryString))
+        formData.append('title', newImageTitle.value)
+        formData.append('category', newImageCategory.value)
+
+        fetch(urlWorks, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'multipart/form-data' 
+            }
+        })
+        .then(response => response.json())
+        .then(data => console.log(data))
+        .catch(error => console.error('Erreur:', error));
+    }
+
+    reader.readAsBinaryString(newImageFile.files[0]);
+}
+createWork() 
+

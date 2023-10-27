@@ -294,7 +294,7 @@ nav a:hover {
     display: none !important;
 }
 #modal-delete{
-    width: 40rem;
+    width: 46%;
     height: auto;
     font-size: 1rem;
     background-color: #fff;
@@ -390,7 +390,7 @@ hr{
     align-items: center;
     padding: 1rem;
     gap: 1rem;
-    width: 40rem;
+    width: 46%;
     height: auto;
     font-size: 1rem;
     background-color: #fff;
@@ -428,7 +428,6 @@ input[type="file"] {
     display: none;
 }
   
-
 .custom-upload-btn {
     display: flex;
     flex-direction: column;
@@ -475,11 +474,15 @@ input[type="file"] {
     font-weight: 400;
     line-height: normal;
 }
-  .custom-file-name {
-    font-size: 1rem;
-    margin-left: 10px;
+
+.custom-upload-btn img{
+    object-fit: cover;
 }
-.form-label{
+.img-miniature {
+    width: 8.0625rem;
+    height: 12.0625rem;
+}
+.form-input{
     width: auto;
     height: 3.1875rem;
     background: #FFF;
@@ -500,7 +503,7 @@ input[type="text"], select {
     height: 2.25rem;
     flex-shrink: 0;
     border-radius: 3.75rem;
-    background: #A7A7A7;;
+    background: #A7A7A7;
     color: #fff;
     text-align: center;
     font-family: "Syne";
@@ -511,4 +514,7 @@ input[type="text"], select {
     border: none;
     margin-bottom: 3rem;
     align-self: center;
+}
+.btn-valid-active{
+    background: #1D6154 !important;
 }
