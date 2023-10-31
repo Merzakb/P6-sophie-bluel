@@ -43,7 +43,7 @@ function adminLogin (email, password) {
         localStorage.setItem('token', token)
 
         // Rediriger vers la page d'acceuil
-        window.location.href = 'http://127.0.0.1:5500/FrontEnd/index.html'
+        window.location.href = './index.html'
     }).catch(error => {
         //afficher le message d'erreur sur le navigateur
         let errorMessage = document.getElementById("error-login")

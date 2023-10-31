@@ -3,6 +3,7 @@
 *********** initialisation************
 **************************************/
 const urlWorks = `http://localhost:5678/api/works`
+const gallery = document.querySelector(".gallery")
 let works
 const BtnsCategories = document.querySelector("#btns-categories") //élement qui contient tous les boutons catégories
 const btnTous = document.createElement("button")//bouton tous
@@ -35,6 +36,7 @@ main()
  */
 async function getWorks() {
     try {
+        gallery.innerHTML = ""
       // on récupère les projets de l'API
       const response = await fetch(urlWorks)
       // convertir la reponse en json et la retourner
@@ -94,7 +96,6 @@ function displayWorksByCategory() {
  * @param {object} work objet d'un seul work
  */
 function showWorks(work) {
-    const gallery = document.querySelector(".gallery")
     const figure = document.createElement("figure")
     const workImage = document.createElement("img")
     const workTitle = document.createElement("figcaption")
@@ -218,18 +219,15 @@ function logOut() {
 function displayModal() {
     btnEdit.addEventListener("click", (e) => {
         e.preventDefault()
-        //condition créer et afficher une seule une instance de la modal
+        //condition pour créer et afficher une seule une instance de la modal
         if (!modal) {
             modal  = document.querySelector("#modal") 
-            modal.removeAttribute("aria-hidden")
-            modal.setAttribute("aria-modal", "true")
-            document.body.classList.add('no-scroll')
             displayModalWorks()//afficher les photos des works dans la modal
             maskModal()//fermer la modal
             deleteWork()//supprimer un work
             openModalAdd()//ouvrir le formulaire pour ajouter un work
-           // backToInitialModal()//revenir vers la modale initiale
-           // maskFormModal()//fermer la modale à partir du formulaire d'ajout d'un work
+            backToInitialModal()//revenir vers la modale initiale
+            maskFormModal()//fermer la modale à partir du formulaire d'ajout d'un work
         }
         modal.classList.add("active")
     })
@@ -328,6 +326,7 @@ function deleteRequest(id) {
         if (!response.ok) {
         throw new Error(`Erreur serveur, statut : ${response.status}`)
         }
+        getWorks()
         return response.json()
     })
     .then(data => {
@@ -362,7 +361,6 @@ function openModalAdd() {
 function backToInitialModal() {
     btnModalBack.addEventListener("click", (e) => {
         e.preventDefault()
-        console.log("backToInitialModal()");
         modalAdd.classList.add("desactive")
         modalAdd.classList.remove("active")
     })
@@ -372,7 +370,6 @@ function backToInitialModal() {
 function maskFormModal(){
     btnCloseFormModal.addEventListener("click", (e) => {
         if (modal) {
-            console.log("ok");
             e.preventDefault()
             e.stopPropagation()
             closeModal()
@@ -387,7 +384,6 @@ async function getCategories() {
       const response = await fetch("http://localhost:5678/api/categories")
     	const categories = await response.json()
         displayCategories(categories)
-        console.log(categories );
         return categories
     } catch (error) {
         alertErrors(error)
@@ -410,6 +406,7 @@ async function displayCategories(categories) {
 
 
 /**form test */
+const formNewWork = document.getElementById("add-work")
 const newImageFile = document.querySelector("#file") 
 const newImageTitle =  document.querySelector("#title")
 const newImageCategory =  document.querySelector("#category-select")
@@ -424,7 +421,7 @@ function checkFieldsFull() {
     const titleField = newImageTitle.value !== ''
     const selectField = newImageCategory.value !== ''
 
-    return imgFiled && titleField && selectField
+    return  titleField && selectField && imgFiled
 }
 
 //fonction pour activer ou désactiver le bouton submit
@@ -451,72 +448,52 @@ newImageFile.addEventListener('change', function() {
 })
 
 
-newImageTitle.addEventListener('input', activeSubmitBtn());
-newImageCategory.addEventListener('change', activeSubmitBtn());
+newImageTitle.addEventListener('input', () => {
+    const titleField = newImageTitle.value
+    console.log(titleField + "input title");
+    activeSubmitBtn()
+})
+
+newImageCategory.addEventListener('change', () => {
+    activeSubmitBtn()
+})
 
 //envoyer le work
-btnSubmitNewWork.addEventListener("submit", (e)=>{
+
+formNewWork.addEventListener("submit", (e)=>{
     e.preventDefault()
+    console.log("form work");
     createWork()
 })
 
 
 //fonction pour créer un nouveau work
-/*
+
 function createWork() {
     const formData = new FormData();
     formData.append('image', newImageFile.files[0])
     formData.append('title', newImageTitle.value)
     formData.append('category', newImageCategory.value)
-    console.log(formData);
+
     fetch(urlWorks, {
         method: 'POST',
         headers: {
             'Authorization': `Bearer ${token}`,
-            'Content-Type': 'multipart/form-data' 
         },
         body: formData
     })
     .then(response => {
         if (!response.ok) {
-            throw new Error(`Erreur HTTP, statut ${response.status}`)
+            throw new Error(`Erreur serveur, statut ${response.status}`)
         }
-        return response.json()
+        console.log(response.json());
+        getWorks()
     })
     .then(data => {
-        console.log('Données envoyées avec succès:', data)
+        console.log('work ajouté avec succès:', data)
     })
     .catch(error => {
-        console.error('Erreur lors de l\'envoi des données:', error)
+        console.error('Erreur lors de l\'envoi du work:', error)
     })
 }
-
-*/
-function createWork() {
-    const reader = new FileReader();
-    reader.onload = function() {
-        let binaryString = reader.result;
-        
-        const formData = new FormData();
-    
-        formData.append('image',  btoa(binaryString))
-        formData.append('title', newImageTitle.value)
-        formData.append('category', newImageCategory.value)
-
-        fetch(urlWorks, {
-            method: 'POST',
-            body: formData,
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'multipart/form-data' 
-            }
-        })
-        .then(response => response.json())
-        .then(data => console.log(data))
-        .catch(error => console.error('Erreur:', error));
-    }
-
-    reader.readAsBinaryString(newImageFile.files[0]);
-}
-createWork() 
 
