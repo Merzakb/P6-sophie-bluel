@@ -185,9 +185,9 @@ footer nav ul {
 	margin: 2em
 }
 
-/********************************************************************************************/
+/********************************************************************/
 /* CODE AJOUTE*/
-/********************************************************************************************/
+/*********************************************************************/
 /* btn catégorie*/
 #btns-categories {
     display: flex;
@@ -229,7 +229,7 @@ footer nav ul {
 }
 
 
-/* EDITION MODE*/
+/************************** EDITION MODE ****************************/
 /* Login*/
 nav a {
     text-decoration: none;
@@ -269,12 +269,18 @@ nav a:hover {
     display: none;
 }
 
-/********************************************************************************************/
+/*********************************************************************/
 /*Modale*/
-/********************************************************************************************/
+/*********************************************************************/
+.active{
+    display: flex !important;
+}
+.desactive{
+    display: none !important;
+}
 .modal {
     position: fixed;
-    display: none;
+    display: flex;
     align-items: center;
     justify-content: center;
     height: 100%;
@@ -285,30 +291,26 @@ nav a:hover {
     right: 0;
     background-color: rgba(0, 0, 0, 0.30);
 }
-
-.active{
-    display: flex !important;
-}
-.desactive{
-    display: none !important;
-}
-#modal-delete{
-    width: 46%;
-    height: auto;
-    font-size: 1rem;
+.modal-wrapper{
     background-color: #fff;
     color: #000;
-    overflow:hidden;
+    overflow: auto;
+    margin-top: 2rem;
+    margin-left: 27%;
+    margin-right: 27%;
+    height: 100vh;
+}
+.modal-wrapper-item{
+    margin: 0;
+}
+#modal-delete{
+    font-size: 1rem;
     display: flex;
     flex-flow: column wrap;
     justify-content: center;
     align-items: center;
     padding: 1rem;
     gap: 2rem;
-    position: absolute; 
-    top: 2rem;
-    left: 27%;
-    right: 27%;
 }
 .modal-wrapper-gallery{
     justify-content: center;
@@ -376,10 +378,6 @@ hr{
     margin-bottom: 3rem;
 }
 
-/* .no-scroll {
-    overflow: hidden;
-} */
-
 /* Formulaire ajout photo */
 #modal-add{
     display: flex;
@@ -387,18 +385,8 @@ hr{
     justify-content: center;
     align-items: center;
     padding: 1rem;
-    gap: 1rem;
-    width: 46%;
-    height: auto;
+    gap: 0.5rem;
     font-size: 1rem;
-    background-color: #fff;
-    color: #000;
-    overflow: auto;
-    z-index: 11;
-    position: absolute; 
-    top: 2rem;
-    left: 27%;
-    right: 27%;
 }
 .form-mask{
     font-size: 1.5rem;

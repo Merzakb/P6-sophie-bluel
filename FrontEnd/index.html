@@ -60,27 +60,6 @@
 			<input type="submit" value="Envoyer">
 		</form>
 	</section>
-     <!-- formulaire test  -->
-    <!-- <div id="formTest">
-        <p id="title-modal-form" class="modal-wrapper-title">Ajout photo</p>
-        <form action="http://localhost:5678/api/works" method="post" class="modal-form" enctype="multipart/form-data" id="add-work">
-            <label class="custom-upload-btn">
-                <i class="fa-regular fa-image"></i>
-                <span class="add-img-btn"> + Ajouter photo</span>
-                <span class="limit">jpg, png : 4mo max</span>
-                <input type="file" name="file" id="file" accept="image/png, image/jpeg">
-              </label>
-            <label for="title">Titre</label>
-            <input class="form-input" type="text" name="title" id="title">
-            <label for="category-select">catégorie</label>
-            <select class="form-input" name="categories" id="category-select">
-                <option value=""></option>
-            </select>
-            <hr>
-            <button class="btn-valid" type="submit">Valider</button>
-        </form>
-    </div>  -->
-    <!-- fin du formulaire test  -->
 </main>
 
 <footer>
@@ -91,39 +70,57 @@
 	</nav>
 </footer>
 <!-- modale -->
-<!-- <aside id="modal" class="modal" aria-hidden="true" role="dialog" aria-modal="false" aria-labelledby="title-modal"> -->
-<aside id="modal" class="modal">
-    <div id="modal-delete" class="">
-        <p class="modal-wrapper-exit">X</p>
-        <p id="title-modal" class="modal-wrapper-title">Galerie photo</p>
-        <div class="modal-wrapper-gallery">
-        </div>
-        <hr>
-        <button id="add-picture" class="btn btn-add-work">Ajouter une photo</button>
-        <div class="alertError" id="delete-success-message"></div>
-        <div class="alertError" id="delete-error-message"></div>
-    </div>
-
-    <div id="modal-add" class="desactive">
-        <p class="form-mask" ><span class="form--mask-back"><i class="fa-solid fa-arrow-left"></i></span> <span class="form-mask-exit"><i class="fa-solid fa-x"></i></span></p>
-        <p id="title-modal-form" class="modal-wrapper-title">Ajout photo</p>
-        <form action="http://localhost:5678/api/works" method="post" class="modal-form" enctype="multipart/form-data" id="add-work">
-            <label class="custom-upload-btn">
-                <i class="fa-regular fa-image"></i>
-                <span class="add-img-btn"> + Ajouter photo</span>
-                <span class="limit">jpg, png : 4mo max</span>
-                <input type="file" name="file" id="file" accept="image/png, image/jpeg" maxlength="4194304">
-                </label>
-                <span class="custom-file-name"></span>
-            <label for="title">Titre</label>
-            <input class="form-input" type="text" name="title" id="title">
-            <label for="category-select">catégorie</label>
-            <select class="form-input" name="categories" id="category-select">
-                <option value=""></option>
-            </select>
+<!-- <aside id="modal" class="modal" aria-hidden="true" role="dialog" aria-modal="false" aria-labelledby="title-modal" style="display: none;">  -->
+<aside id="modal" class="modal" style="display: none;">
+    <div class="modal-wrapper">
+        <div id="modal-delete" class="modal-wrapper-item">
+            <p class="modal-wrapper-exit">X</p>
+            <p id="title-modal" class="modal-wrapper-title">Galerie photo</p>
+            <div class="modal-wrapper-gallery">
+            </div>
             <hr>
-            <button class="btn-valid" type="submit">Valider</button>
-        </form> 
+            <button id="add-picture" class="btn btn-add-work">Ajouter une photo</button>
+            <form action="http://localhost:5678/api/works" method="post" class="modal-form" enctype="multipart/form-data" id="add-work">
+                <label class="custom-upload-btn">
+                    <i class="fa-regular fa-image"></i>
+                    <span class="add-img-btn"> + Ajouter photo</span>
+                    <span class="limit">jpg, png : 4mo max</span>
+                    <input type="file" name="file" id="file" accept="image/png, image/jpeg" maxlength="4194304">
+                    </label>
+                    <span class="custom-file-name"></span>
+                <label for="title">Titre</label>
+                <input class="form-input" type="text" name="title" id="title">
+                <label for="category-select">catégorie</label>
+                <select class="form-input" name="categories" id="category-select">
+                    <option value=""></option>
+                </select>
+                <hr>
+                <button class="btn-valid" type="submit">Valider</button>
+            </form> 
+            <div class="alertError" id="delete-success-message"></div>
+            <div class="alertError" id="delete-error-message"></div>
+        </div>
+        <div id="modal-add" class="modal-wrapper-item desactive">
+            <p class="form-mask" ><span class="form--mask-back"><i class="fa-solid fa-arrow-left"></i></span> <span class="form-mask-exit"><i class="fa-solid fa-x"></i></span></p>
+            <p id="title-modal-form" class="modal-wrapper-title">Ajout photo</p>
+            <!-- <form action="http://localhost:5678/api/works" method="post" class="modal-form" enctype="multipart/form-data" id="add-work">
+                <label class="custom-upload-btn">
+                    <i class="fa-regular fa-image"></i>
+                    <span class="add-img-btn"> + Ajouter photo</span>
+                    <span class="limit">jpg, png : 4mo max</span>
+                    <input type="file" name="file" id="file" accept="image/png, image/jpeg" maxlength="4194304">
+                    </label>
+                    <span class="custom-file-name"></span>
+                <label for="title">Titre</label>
+                <input class="form-input" type="text" name="title" id="title">
+                <label for="category-select">catégorie</label>
+                <select class="form-input" name="categories" id="category-select">
+                    <option value=""></option>
+                </select>
+                <hr>
+                <button class="btn-valid" type="submit">Valider</button>
+            </form>  -->
+        </div>
     </div>  
 </aside>
 </body>

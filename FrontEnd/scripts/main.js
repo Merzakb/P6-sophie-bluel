@@ -4,6 +4,7 @@
 **************************************/
 const urlWorks = `http://localhost:5678/api/works`
 const gallery = document.querySelector(".gallery")
+const modalGallery = document.querySelector(".modal-wrapper-gallery")
 let works
 const BtnsCategories = document.querySelector("#btns-categories") //élement qui contient tous les boutons catégories
 const btnTous = document.createElement("button")//bouton tous
@@ -43,6 +44,7 @@ async function getWorks() {
     	works = await response.json()
         displayWorks(works)
         displayWorksByCategory()
+        displayModalWorks()
     } catch (error) {
         alertErrors(error)
     }
@@ -64,6 +66,7 @@ async function displayWorks(array) {
 
 //fonction pour afficher les works par catégorie
 function displayWorksByCategory() {
+    BtnsCategories.innerHTML = "";
 	creatBtnTous()//bouton "Tous"
 	createBtnCategories()//boutons catégories
 
@@ -216,6 +219,8 @@ function logOut() {
 /******************************************************************************************/
 /********* Modal 1 - OUVRIR ET FERMER LA MODALE ET SUPPRIMER UN WORK********/
 /******************************************************************************************/
+const modalDelete = document.getElementById("modal-delete")
+const modalAdd = document.getElementById("modal-add")
 function displayModal() {
     btnEdit.addEventListener("click", (e) => {
         e.preventDefault()
@@ -229,7 +234,12 @@ function displayModal() {
             backToInitialModal()//revenir vers la modale initiale
             maskFormModal()//fermer la modale à partir du formulaire d'ajout d'un work
         }
-        modal.classList.add("active")
+        modal.style.display = null
+       // modal.classList.add("active")
+        modalAdd.classList.add("desactive")
+        modalAdd.classList.remove("active")
+        modalDelete.classList.add("active")
+        modalDelete.classList.remove("desactive")
     })
 }
 
@@ -260,18 +270,18 @@ function maskModal() {
 }
 function closeModal(){
     modal.classList.remove("active")
-    modal.setAttribute("aria-hidden", "true")
-    modal.removeAttribute("aria-modal")
-    document.body.classList.remove('no-scroll')
     deleteSuccessMessage.textContent = ""
     deleteErrorMessage.textContent = ""
     modalAdd.classList.add("desactive")
     modalAdd.classList.remove("active")
+    modal.style.display = "none"
 }
 
 //afficher les photos des works sur la modal
 async function displayModalWorks() {
     try {
+        modalGallery.innerHTML="";
+        console.log(works)
         for (const work of works) {
             showWorksOnModal(work)
         }
@@ -281,7 +291,7 @@ async function displayModalWorks() {
 }
 
 function showWorksOnModal(work) {
-    const modalGallery = document.querySelector(".modal-wrapper-gallery")
+    
     const modalFigure = document.createElement("div")
     const modalWorkImage = document.createElement("img")
     const deleteWork = document.createElement("i")
@@ -314,34 +324,31 @@ function deleteWork() {
  * @param {Number} id 
  */
 function deleteRequest(id) {
-    const urlDelete = `http://localhost:5678/api/works/${id}`
-    fetch(urlDelete, {
-        method: 'DELETE',
+    fetch(`http://localhost:5678/api/works/${id}`, {
+        method: "DELETE",
         headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-        }
+            accept: "*/*",
+            Authorization: `Bearer ${token}`,
+        },
     })
     .then(response => {
         if (!response.ok) {
         throw new Error(`Erreur serveur, statut : ${response.status}`)
         }
         getWorks()
-        return response.json()
+        displayModalWorks();
     })
-    .then(data => {
+    .then(() => {
         deleteSuccessMessage.textContent = `L'élément avec l'id: ${id} est supprimé avec succès`
-        console.log(`L'élément avec l'id: ${id} est supprimé avec succès`)
     })
     .catch(error => {
         deleteSuccessMessage.textContent = `Erreur lors de la suppression de l\'élément avec l'id: ${id}, erreur : ${error}`
     })
 }
-/******************************************************************************************/
-/********* Modal 2 - OUVRIR ET FERMER LA MODALE ET AJOUTER UN WORK********/
-/******************************************************************************************/
-const modalDelete = document.getElementById("modal-delete")
-const modalAdd = document.getElementById("modal-add")
+
+/********************************************************************/
+/****** Modal 2 - OUVRIR ET FERMER LA MODALE ET AJOUTER UN WORK******/
+/*********************************************************************/
 const btnAddPicture = document.getElementById("add-picture")
 const btnModalBack = document.querySelector(".fa-arrow-left")
 const btnCloseFormModal = document.querySelector(".fa-x")
@@ -350,10 +357,10 @@ const btnCloseFormModal = document.querySelector(".fa-x")
 function openModalAdd() {
     btnAddPicture.addEventListener("click", (e) => {
         e.preventDefault()
+        modalDelete.classList.add("desactive")
+        modalDelete.classList.remove("active")
         modalAdd.classList.remove("desactive")
         modalAdd.classList.add("active")
-        modalDelete.classList.add("desactive")
-        modalDelete.classList.remove("desactive")
     })
 }
 
@@ -363,6 +370,8 @@ function backToInitialModal() {
         e.preventDefault()
         modalAdd.classList.add("desactive")
         modalAdd.classList.remove("active")
+        modalDelete.classList.add("active")
+        modalDelete.classList.remove("desactive")
     })
 }
 
@@ -496,4 +505,3 @@ function createWork() {
         console.error('Erreur lors de l\'envoi du work:', error)
     })
 }
-
