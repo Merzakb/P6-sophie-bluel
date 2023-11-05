@@ -1,27 +1,38 @@
-
-/*************************************
-*********** initialisation************
-**************************************/
+/*********** initialisation************/
 const urlWorks = `http://localhost:5678/api/works`
 const gallery = document.querySelector(".gallery")
-const modalGallery = document.querySelector(".modal-wrapper-gallery")
 let works
 const BtnsCategories = document.querySelector("#btns-categories") //élement qui contient tous les boutons catégories
 const btnTous = document.createElement("button")//bouton tous
 let btnCategoryFilter // les autres boutons des catégories
-const loginBtn =  document.querySelector(".log-in-out")//btn login/logout
-const btnEdit = document.querySelector(".edit")
-//edit
-const userId = localStorage.getItem('userId')
-const token = localStorage.getItem('token')
-//modal
-let modal
 const btnExit = document.querySelector(".modal-wrapper-exit")
+//mode édition 
+const loginBtn =  document.querySelector(".log-in-out")
+const btnEdit = document.querySelector(".edit")
+const userId = sessionStorage.getItem("userId")
+const token = sessionStorage.getItem("token")
+let modal
+//modal delete
+const modalDelete = document.getElementById("modal-delete")
+const modalAdd = document.getElementById("modal-add")
+const modalGallery = document.querySelector(".modal-wrapper-gallery")
 let btnsDeleteWork
 const deleteErrorMessage = document.getElementById("delete-error-message")
 const deleteSuccessMessage = document.getElementById("delete-success-message")
+//moadal add
+const btnAddPicture = document.getElementById("add-picture")
+const btnModalBack = document.querySelector(".fa-arrow-left")
+const btnCloseFormModal = document.querySelector(".fa-x")
+const formNewWork = document.getElementById("add-work")
+const newImageFile = document.querySelector("#file") 
+const newImageTitle =  document.querySelector("#title")
+const newImageCategory =  document.querySelector("#category-select")
+const btnSubmitNewWork = document.querySelector(".btn-valid")
+const uploadedFileLabel = document.querySelector(".custom-upload-btn")
+const imgMiniature = document.createElement("img")
+const btnRplaceFile = document.querySelector(".btn-replace-file")
 
-//fonction principale
+/****************fonction principale****************/
 function main(){
     getWorks()
     getCategories()
@@ -29,31 +40,30 @@ function main(){
 }
 main()
 
-/******************************************************************************************/
+/*********************************************************************/
 /*AFFICHER LES WORKS ET FILTRER PAR CATEGORIE*/ 
-/******************************************************************************************/
-/**
+/*********************************************************************/
+/*
  * @returns {Array} de tous les works
- */
+*/
 async function getWorks() {
     try {
         gallery.innerHTML = ""
-      // on récupère les projets de l'API
-      const response = await fetch(urlWorks)
-      // convertir la reponse en json et la retourner
+
+        const response = await fetch(urlWorks)
     	works = await response.json()
         displayWorks(works)
         displayWorksByCategory()
         displayModalWorks()
     } catch (error) {
-        alertErrors(error)
+        serverErrors(gallery)
     }
 }
 
 /**
  * fonction pour afficher les works
  * @param {Array} array selon les boutons des catégories
- */
+*/
 async function displayWorks(array) {
     try {
       for (const work of array) {
@@ -66,7 +76,7 @@ async function displayWorks(array) {
 
 //fonction pour afficher les works par catégorie
 function displayWorksByCategory() {
-    BtnsCategories.innerHTML = "";
+    BtnsCategories.innerHTML = ""
 	creatBtnTous()//bouton "Tous"
 	createBtnCategories()//boutons catégories
 
@@ -75,13 +85,13 @@ function displayWorksByCategory() {
 
 	for (let j = 0; j < arrayBtnCategoryFilter.length; j++) {
 		arrayBtnCategoryFilter[j].addEventListener("click", ()=>{
-			let dataId = arrayBtnCategoryFilter[j].getAttribute('data-id')
+			let dataId = arrayBtnCategoryFilter[j].getAttribute("data-id")
 			let currentBtn = arrayBtnCategoryFilter[j]
 			//on supprime la class "selected" pour tous les boutons
-			btnTous.classList.remove( "btn-category-selected")
+			btnTous.classList.remove("btn-category-selected")
 			btnCategoryFilter.forEach(function(element) {
-				element.classList.remove('btn-category-selected')
-			});
+				element.classList.remove("btn-category-selected")
+			})
 			//on ajoute cette class au bouton cliqué
 			currentBtn.classList.add("btn-category-selected")
 			//on crée filtre nos works par catégorie
@@ -94,8 +104,8 @@ function displayWorksByCategory() {
 	}
 }
 
-//fonction pour afficher un work
 /**
+ * fonction pour afficher un work
  * @param {object} work objet d'un seul work
  */
 function showWorks(work) {
@@ -115,14 +125,14 @@ function showWorks(work) {
 }
 
 //focntion pour afficher les erreurs serveurs
-function alertErrors(){
+function serverErrors(errorWrapper) {
     const alertError = document.createElement("div")
     alertError.classList.add("alertError")
-    alertError.innerText = ` Erreur serveur, impossible de charger les élements`
-    document.querySelector(".gallery").prepend(alertError)
+    alertError.innerText = `Erreur serveur, impossible de charger les projets`
+    errorWrapper.prepend(alertError)
 }
 
-//créer le bouton "tous" pour afficher tous les works
+//fonction pour créer le bouton "tous" pour afficher tous les works
 function creatBtnTous(){
 	btnTous.classList.add("btn-category-filter", "btn-tous", "btn-category-selected")
 	btnTous.innerText = "Tous"
@@ -133,7 +143,7 @@ function creatBtnTous(){
 		//on supprime la class "selected" pour les autres boutons
 		btnCategoryFilter.forEach(function(element) {
 			element.classList.remove('btn-category-selected')
-		});
+		})
 		//et on la rajoute au bouton "tous"
 		btnTous.classList.add( "btn-category-selected")
 		//on supprime les works par catégorie
@@ -143,7 +153,7 @@ function creatBtnTous(){
 	})
 }
 
-//création des boutons filtres par catégories
+//fonction pour créer des boutons filtres par catégories
 function createBtnCategories(){
 	const CategoryIdArray = categoryListId()//liste des id des catégories
 	const CategoryNameArray = categoryListName()//liste des nmae des catégories
@@ -157,12 +167,12 @@ function createBtnCategories(){
 	}
 }
 
-/*fonction pour récupérer les catégories à partir du tableau works */
+/*fonctions pour récupérer les catégories à partir du tableau works */
 /**
  * @returns {Array} des id des catégories présents dans la liste works
  */
 function categoryListId(){
-	const categoryIdSet = new Set();
+	const categoryIdSet = new Set()
 	works.forEach(item => {
 		categoryIdSet.add(item.category.id)
 	})
@@ -179,15 +189,13 @@ function categoryListName(){
 	return Array.from(categoryNameSet)
 }
 
-
-/******************************************************************************************/
+/*********************************************************************/
 /*MODE EDITION - CONNEXION ET DECONNEXION*/
-/******************************************************************************************/
+/*********************************************************************/
 //fonction pour exécuter le mode édition
 function login(){
 	//récupérer le token 
 	if (token) {
-		loginBtn.textContent = 'logout'//changer le text du bouton login en logout
 		editionMode()
 		logOut()
         displayModal()
@@ -196,7 +204,7 @@ function login(){
 
 //afficher le mode édition
 function editionMode() {
-	loginBtn.textContent = 'logout'
+	loginBtn.textContent = "logout"
 	const bannerEdit = document.createElement("div")
 	bannerEdit.innerHTML = `<i class="fa-regular fa-pen-to-square"></i>  Mode édition`
 	bannerEdit.classList.add("banner-edit")
@@ -208,19 +216,18 @@ function editionMode() {
 
 //fonction pour se déconnecter
 function logOut() {
-	loginBtn.addEventListener('click', (e) => {
+	loginBtn.addEventListener("click", (e) => {
         e.preventDefault()
-		localStorage.removeItem('userId')
-		localStorage.removeItem('token')
-		window.location.href = 'index.html'
+		sessionStorage.removeItem("userId")
+		sessionStorage.removeItem("token")
+		window.location.href = "index.html"
 	})
 }
 
-/******************************************************************************************/
-/********* Modal 1 - OUVRIR ET FERMER LA MODALE ET SUPPRIMER UN WORK********/
-/******************************************************************************************/
-const modalDelete = document.getElementById("modal-delete")
-const modalAdd = document.getElementById("modal-add")
+/********************************************************************/
+/*****Modal 1 - OUVRIR ET FERMER LA MODALE ET SUPPRIMER UN WORK****/
+/********************************************************************/
+//fonction pour afficher la modale
 function displayModal() {
     btnEdit.addEventListener("click", (e) => {
         e.preventDefault()
@@ -232,10 +239,9 @@ function displayModal() {
             deleteWork()//supprimer un work
             openModalAdd()//ouvrir le formulaire pour ajouter un work
             backToInitialModal()//revenir vers la modale initiale
-            maskFormModal()//fermer la modale à partir du formulaire d'ajout d'un work
+            maskFormModal()//fermer la modale à partir de modalAdd
         }
-        modal.style.display = null
-       // modal.classList.add("active")
+        modal.classList.add("active")
         modalAdd.classList.add("desactive")
         modalAdd.classList.remove("active")
         modalDelete.classList.add("active")
@@ -255,19 +261,18 @@ function maskModal() {
     })
     //fermer la modal en cliquant en dehors de la div modal-wrapper
     window.addEventListener("click", (e) => {
-        e.preventDefault()
         if (e.target === modal) {
             closeModal()
         }
     })
     //fermer la modal avec le clavier "echap"
     window.addEventListener("keydown", (e) => {
-        e.preventDefault()
         if (e.key === "Escape" || e.key === "ESC") {
             closeModal()
         }
     })
 }
+
 function closeModal(){
     modal.classList.remove("active")
     deleteSuccessMessage.textContent = ""
@@ -278,20 +283,22 @@ function closeModal(){
 }
 
 //afficher les photos des works sur la modal
-async function displayModalWorks() {
+function displayModalWorks() {
     try {
-        modalGallery.innerHTML="";
-        console.log(works)
+        modalGallery.innerHTML=""
         for (const work of works) {
             showWorksOnModal(work)
         }
     } catch (error) {
-        alertErrors(error)
+        serverErrors(modalGallery)
     }
 }
 
+/**
+ * fonction pour afficher un work sur la modale
+ * @param {Object} work 
+ */
 function showWorksOnModal(work) {
-    
     const modalFigure = document.createElement("div")
     const modalWorkImage = document.createElement("img")
     const deleteWork = document.createElement("i")
@@ -311,10 +318,13 @@ function showWorksOnModal(work) {
 function deleteWork() {
     btnsDeleteWork = document.querySelectorAll(".fa-trash-can")
     btnsDeleteWork.forEach(btn => {
-        //on récupère l'id du btn delete qui correspond à l'id du work
-        let btnDataId = btn.getAttribute('data-id')
+        let btnDataId = btn.getAttribute("data-id")
         btn.addEventListener("click", (e) => {
-            deleteRequest(btnDataId)
+            const confirmDelete = window.confirm("Voulez-vous vraiment supprimer ce projet ?")
+            
+            if (confirmDelete) {
+                deleteRequest(btnDataId)
+            }
             e.preventDefault()
         })
     }) 
@@ -336,23 +346,19 @@ function deleteRequest(id) {
         throw new Error(`Erreur serveur, statut : ${response.status}`)
         }
         getWorks()
-        displayModalWorks();
+        displayModalWorks()
     })
     .then(() => {
-        deleteSuccessMessage.textContent = `L'élément avec l'id: ${id} est supprimé avec succès`
+        deleteSuccessMessage.textContent = `le projet avec l'id: ${id} est supprimé avec succès`
     })
     .catch(error => {
-        deleteSuccessMessage.textContent = `Erreur lors de la suppression de l\'élément avec l'id: ${id}, erreur : ${error}`
+        deleteSuccessMessage.textContent = `Erreur lors de la suppression du projet avec l'id: ${id}. Type d'erreur : ${error.message}`
     })
 }
 
 /********************************************************************/
 /****** Modal 2 - OUVRIR ET FERMER LA MODALE ET AJOUTER UN WORK******/
 /*********************************************************************/
-const btnAddPicture = document.getElementById("add-picture")
-const btnModalBack = document.querySelector(".fa-arrow-left")
-const btnCloseFormModal = document.querySelector(".fa-x")
-
 //fonction pour ouvrir le formulaire ajout d'une image
 function openModalAdd() {
     btnAddPicture.addEventListener("click", (e) => {
@@ -395,11 +401,11 @@ async function getCategories() {
         displayCategories(categories)
         return categories
     } catch (error) {
-        alertErrors(error)
+        console.log(error)
     }
 }
 
-
+//fonction pour afficher les catégories
 async function displayCategories(categories) {
     try {
       for (const category of categories) {
@@ -413,95 +419,96 @@ async function displayCategories(categories) {
     }
 }
 
-
-/**form test */
-const formNewWork = document.getElementById("add-work")
-const newImageFile = document.querySelector("#file") 
-const newImageTitle =  document.querySelector("#title")
-const newImageCategory =  document.querySelector("#category-select")
-const btnSubmitNewWork = document.querySelector(".btn-valid")
-const uploadedFileLabel = document.querySelector(".custom-upload-btn")
-const imgMiniature = document.createElement("img")
-imgMiniature.classList.add("img-miniature")
-
 //fonction pour voir si les champs sont remplis ou non
 function checkFieldsFull() {
-    const imgFiled = newImageFile.value !== ''
-    const titleField = newImageTitle.value !== ''
-    const selectField = newImageCategory.value !== ''
+    const imgFiled = newImageFile.value !== ""
+    const titleField = newImageTitle.value !== ""
+    const selectField = newImageCategory.value !== ""
 
     return  titleField && selectField && imgFiled
 }
 
 //fonction pour activer ou désactiver le bouton submit
 function activeSubmitBtn() {
-    btnSubmitNewWork.disabled = !checkFieldsFull();
-    btnSubmitNewWork.style.backgroundColor = checkFieldsFull() ? '#1D6154' : '#A7A7A7'
+    btnSubmitNewWork.disabled = !checkFieldsFull()
+    btnSubmitNewWork.style.backgroundColor = checkFieldsFull() ? "#1D6154" : "#A7A7A7"
 }
 
-/*******Ajoutez des écouteurs d'événements à tous les champs******/
+newImageTitle.addEventListener("input", () => {
+    activeSubmitBtn()
+})
+
+newImageCategory.addEventListener("change", () => {
+    activeSubmitBtn()
+})
+
 //focntion pour afficher l'image uploadée avant de l'envoyer
-newImageFile.addEventListener('change', function() {
-    const file = this.files[0];
+newImageFile.addEventListener("change", function() {
+    imgMiniature.classList.add("img-miniature")
+    btnRplaceFile.style.display = "block"
+
+    const file = this.files[0]
     if (file) {
-        const reader = new FileReader();
+        const reader = new FileReader()
         reader.onload = function(e) {
             imgMiniature.src = e.target.result
         }
         uploadedFileLabel.textContent = ""
         uploadedFileLabel.appendChild(imgMiniature)
-        reader.readAsDataURL(file);
+        reader.readAsDataURL(file)
         activeSubmitBtn()
     }
     return file
 })
 
-
-newImageTitle.addEventListener('input', () => {
-    const titleField = newImageTitle.value
-    console.log(titleField + "input title");
-    activeSubmitBtn()
-})
-
-newImageCategory.addEventListener('change', () => {
-    activeSubmitBtn()
+//pour remplacer l'image téléchargée par une autre
+btnRplaceFile.addEventListener("click", ()=>{
+    newImageFile.click()
 })
 
 //envoyer le work
-
 formNewWork.addEventListener("submit", (e)=>{
     e.preventDefault()
-    console.log("form work");
     createWork()
+    formNewWork.reset()
+    uploadedFileLabel.innerHTML = `
+        <i class="fa-regular fa-image"></i>
+        <span class="add-img-btn"> + Ajouter photo</span>
+        <span class="limit">jpg, png : 4mo max</span>
+        <input type="file" name="file" id="file" accept="image/png, image/jpeg" maxlength="4194304">
+        </label>
+        <span class="custom-file-name"></span>
+    `
+    newImageTitle.value = ""
+    newImageCategory.value = ""
+    closeModal()
 })
 
-
 //fonction pour créer un nouveau work
-
 function createWork() {
-    const formData = new FormData();
-    formData.append('image', newImageFile.files[0])
-    formData.append('title', newImageTitle.value)
-    formData.append('category', newImageCategory.value)
+    const formData = new FormData()
+    formData.append("image", newImageFile.files[0])
+    formData.append("title", newImageTitle.value)
+    formData.append("category", newImageCategory.value)
 
     fetch(urlWorks, {
-        method: 'POST',
+        method: "POST",
         headers: {
-            'Authorization': `Bearer ${token}`,
+            "Authorization" : `Bearer ${token}`,
         },
         body: formData
     })
     .then(response => {
         if (!response.ok) {
             throw new Error(`Erreur serveur, statut ${response.status}`)
+            
         }
-        console.log(response.json());
         getWorks()
     })
-    .then(data => {
-        console.log('work ajouté avec succès:', data)
+    .then(() => {
+        alert("Projet ajouté avec succès")
     })
-    .catch(error => {
-        console.error('Erreur lors de l\'envoi du work:', error)
+    .catch(() => {
+        alert("une erreur a empêché la création du nouveau projet")
     })
 }

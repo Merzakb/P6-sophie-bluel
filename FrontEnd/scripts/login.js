@@ -38,9 +38,9 @@ function adminLogin (email, password) {
     .then(data => {
         let userId = data.userId
         let token = data.token
-        //stocker le token dans le localStorage
-        localStorage.setItem('userId', userId)
-        localStorage.setItem('token', token)
+        //stocker le token dans le sessionStorage
+        sessionStorage.setItem('userId', userId)
+        sessionStorage.setItem('token', token)
 
         // Rediriger vers la page d'acceuil
         window.location.href = './index.html'
