@@ -463,10 +463,8 @@ input[type="file"] {
     line-height: normal;
 }
 
-.custom-upload-btn img{
-    object-fit: cover;
-}
 .img-miniature {
+    object-fit: cover;
     width: 8.0625rem;
     height: 12.0625rem;
 }

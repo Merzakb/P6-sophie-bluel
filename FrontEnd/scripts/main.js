@@ -17,8 +17,7 @@ const modalDelete = document.getElementById("modal-delete")
 const modalAdd = document.getElementById("modal-add")
 const modalGallery = document.querySelector(".modal-wrapper-gallery")
 let btnsDeleteWork
-const deleteErrorMessage = document.getElementById("delete-error-message")
-const deleteSuccessMessage = document.getElementById("delete-success-message")
+const deleteMessage = document.getElementById("delete-message")
 //moadal add
 const btnAddPicture = document.getElementById("add-picture")
 const btnModalBack = document.querySelector(".fa-arrow-left")
@@ -30,7 +29,7 @@ const newImageCategory =  document.querySelector("#category-select")
 const btnSubmitNewWork = document.querySelector(".btn-valid")
 const uploadedFileLabel = document.querySelector(".custom-upload-btn")
 const imgMiniature = document.createElement("img")
-const btnRplaceFile = document.querySelector(".btn-replace-file")
+const btnReplaceFile = document.querySelector(".btn-replace-file")
 
 /****************fonction principale****************/
 function main(){
@@ -231,7 +230,7 @@ function logOut() {
 function displayModal() {
     btnEdit.addEventListener("click", (e) => {
         e.preventDefault()
-        //condition pour créer et afficher une seule une instance de la modal
+        //condition pour créer et afficher une seule instance de la modal
         if (!modal) {
             modal  = document.querySelector("#modal") 
             displayModalWorks()//afficher les photos des works dans la modal
@@ -275,8 +274,7 @@ function maskModal() {
 
 function closeModal(){
     modal.classList.remove("active")
-    deleteSuccessMessage.textContent = ""
-    deleteErrorMessage.textContent = ""
+    deleteMessage.textContent = ""
     modalAdd.classList.add("desactive")
     modalAdd.classList.remove("active")
     modal.style.display = "none"
@@ -314,20 +312,20 @@ function showWorksOnModal(work) {
     modalFigure.appendChild(deleteWork)
 }
 
-//supprimer un works
+/**
+ * fonction pour supprimer un work en s'appuyant sur le concept  "délégation d'événements". 
+ */
 function deleteWork() {
-    btnsDeleteWork = document.querySelectorAll(".fa-trash-can")
-    btnsDeleteWork.forEach(btn => {
-        let btnDataId = btn.getAttribute("data-id")
-        btn.addEventListener("click", (e) => {
+    modalGallery.addEventListener("click", (e) => {
+        const btn = e.target.closest(".fa-trash-can")
+        if (btn) {
+            const btnDataId = btn.getAttribute("data-id")
             const confirmDelete = window.confirm("Voulez-vous vraiment supprimer ce projet ?")
-            
             if (confirmDelete) {
                 deleteRequest(btnDataId)
             }
-            e.preventDefault()
-        })
-    }) 
+        }
+    })
 }
 
 /**
@@ -343,19 +341,18 @@ function deleteRequest(id) {
     })
     .then(response => {
         if (!response.ok) {
-        throw new Error(`Erreur serveur, statut : ${response.status}`)
+            throw new Error(`Erreur serveur, statut : ${response.status}`)
         }
         getWorks()
         displayModalWorks()
     })
     .then(() => {
-        deleteSuccessMessage.textContent = `le projet avec l'id: ${id} est supprimé avec succès`
+        deleteMessage.textContent = `le projet avec l'id: ${id} est supprimé avec succès`
     })
     .catch(error => {
-        deleteSuccessMessage.textContent = `Erreur lors de la suppression du projet avec l'id: ${id}. Type d'erreur : ${error.message}`
+        deleteMessage.textContent = `Erreur lors de la suppression du projet avec l'id: ${id}. Type d'erreur : ${error.message}`
     })
 }
-
 /********************************************************************/
 /****** Modal 2 - OUVRIR ET FERMER LA MODALE ET AJOUTER UN WORK******/
 /*********************************************************************/
@@ -445,7 +442,7 @@ newImageCategory.addEventListener("change", () => {
 //focntion pour afficher l'image uploadée avant de l'envoyer
 newImageFile.addEventListener("change", function() {
     imgMiniature.classList.add("img-miniature")
-    btnRplaceFile.style.display = "block"
+    btnReplaceFile.style.display = "block"
 
     const file = this.files[0]
     if (file) {
@@ -462,7 +459,7 @@ newImageFile.addEventListener("change", function() {
 })
 
 //pour remplacer l'image téléchargée par une autre
-btnRplaceFile.addEventListener("click", ()=>{
+btnReplaceFile.addEventListener("click", ()=>{
     newImageFile.click()
 })
 
@@ -481,6 +478,8 @@ formNewWork.addEventListener("submit", (e)=>{
     `
     newImageTitle.value = ""
     newImageCategory.value = ""
+    newImageFile.value = ""
+    btnReplaceFile.style.display = "none"
     closeModal()
 })
 
