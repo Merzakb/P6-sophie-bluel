@@ -18,18 +18,19 @@ const modalAdd = document.getElementById("modal-add")
 const modalGallery = document.querySelector(".modal-wrapper-gallery")
 let btnsDeleteWork
 const deleteMessage = document.getElementById("delete-message")
-//moadal add
+//modal add
 const btnAddPicture = document.getElementById("add-picture")
 const btnModalBack = document.querySelector(".fa-arrow-left")
 const btnCloseFormModal = document.querySelector(".fa-x")
 const formNewWork = document.getElementById("add-work")
-const newImageFile = document.querySelector("#file") 
+const newImageFile = document.querySelector("#file")
 const newImageTitle =  document.querySelector("#title")
 const newImageCategory =  document.querySelector("#category-select")
 const btnSubmitNewWork = document.querySelector(".btn-valid")
 const uploadedFileLabel = document.querySelector(".custom-upload-btn")
 const imgMiniature = document.createElement("img")
 const btnReplaceFile = document.querySelector(".btn-replace-file")
+const addErrorMessage = document.querySelector(".add-error-message")
 
 /****************fonction principale****************/
 function main(){
@@ -278,6 +279,11 @@ function closeModal(){
     modalAdd.classList.add("desactive")
     modalAdd.classList.remove("active")
     modal.style.display = "none"
+    formNewWork.reset()
+    newImageTitle.value = ""
+    newImageCategory.value = ""
+    btnSubmitNewWork.disabled = true
+    btnSubmitNewWork.style.backgroundColor =  "#A7A7A7"
 }
 
 //afficher les photos des works sur la modal
@@ -467,20 +473,7 @@ btnReplaceFile.addEventListener("click", ()=>{
 formNewWork.addEventListener("submit", (e)=>{
     e.preventDefault()
     createWork()
-    formNewWork.reset()
-    uploadedFileLabel.innerHTML = `
-        <i class="fa-regular fa-image"></i>
-        <span class="add-img-btn"> + Ajouter photo</span>
-        <span class="limit">jpg, png : 4mo max</span>
-        <input type="file" name="file" id="file" accept="image/png, image/jpeg" maxlength="4194304">
-        </label>
-        <span class="custom-file-name"></span>
-    `
-    newImageTitle.value = ""
-    newImageCategory.value = ""
-    newImageFile.value = ""
-    btnReplaceFile.style.display = "none"
-    closeModal()
+    
 })
 
 //fonction pour créer un nouveau work
@@ -503,11 +496,14 @@ function createWork() {
             
         }
         getWorks()
+        closeModal() 
     })
     .then(() => {
         alert("Projet ajouté avec succès")
     })
     .catch(() => {
-        alert("une erreur a empêché la création du nouveau projet")
+        addErrorMessage.innerText = "une erreur a empêché la création du nouveau projet"
     })
 }
+
+
