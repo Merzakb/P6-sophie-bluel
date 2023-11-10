@@ -73,7 +73,7 @@
 <aside id="modal" class="modal">
     <div class="modal-wrapper">
         <div id="modal-delete" class="modal-wrapper-item">
-            <p class="modal-wrapper-exit">X</p>
+            <p class="modal-wrapper-exit"><span class="form-mask-exit"><i class="fa-solid fa-x"></i></span></p>
             <p id="title-modal" class="modal-wrapper-title">Galerie photo</p>
             <div class="modal-wrapper-gallery">
             </div>
@@ -87,23 +87,26 @@
             <span class="add-error-message"></span>
             <form action="http://localhost:5678/api/works" method="post" class="modal-form" enctype="multipart/form-data" id="add-work">
                 <div class="file-container">
-                    <label class="custom-upload-btn">
+                    <label class="img-upload-btn file-container-item">
                         <i class="fa-regular fa-image"></i>
                         <span class="add-img-btn"> + Ajouter photo</span>
                         <span class="limit">jpg, png : 4mo max</span>
                         <input type="file" name="file" id="file" accept="image/png, image/jpeg" maxlength="4194304">
                     </label>
-                    <p class="btn-replace-file"><i class="fa-solid fa-recycle"></i> Remplacer l'image</p>
+					<label class="img-previsualisation file-container-item">
+                        <p class="btn-replace-file"><i class="fa-solid fa-recycle"></i>  Remplacer l'image</p>
+                    </label>  
                 </div>
                 <label for="title">Titre</label>
                 <input class="form-input" type="text" name="title" id="title">
                 <label for="category-select">catégorie</label>
                 <select class="form-input" name="categories" id="category-select">
-                    <option value=""></option>
+                    <option id="option-empty"></option>
                 </select>
                 <hr>
                 <button class="btn-valid" type="submit">Valider</button>
             </form> 
+            
         </div>
     </div>  
 </aside>

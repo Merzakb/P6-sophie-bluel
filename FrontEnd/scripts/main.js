@@ -27,7 +27,10 @@ const newImageFile = document.querySelector("#file")
 const newImageTitle =  document.querySelector("#title")
 const newImageCategory =  document.querySelector("#category-select")
 const btnSubmitNewWork = document.querySelector(".btn-valid")
-const uploadedFileLabel = document.querySelector(".custom-upload-btn")
+const uploadedFileLabel = document.querySelector(".img-upload-btn")
+const previsualisationImage = document.querySelector(".img-previsualisation")
+
+
 const imgMiniature = document.createElement("img")
 const btnReplaceFile = document.querySelector(".btn-replace-file")
 const addErrorMessage = document.querySelector(".add-error-message")
@@ -209,7 +212,7 @@ function editionMode() {
 	bannerEdit.innerHTML = `<i class="fa-regular fa-pen-to-square"></i>  Mode édition`
 	bannerEdit.classList.add("banner-edit")
 	document.body.prepend(bannerEdit)
-	BtnsCategories.innerHTML = ``
+    BtnsCategories.style.display = "none"
     btnEdit.classList.add("active")
 	
 }
@@ -279,9 +282,11 @@ function closeModal(){
     modalAdd.classList.add("desactive")
     modalAdd.classList.remove("active")
     modal.style.display = "none"
+
     formNewWork.reset()
-    newImageTitle.value = ""
-    newImageCategory.value = ""
+    uploadedFileLabel.style.display = "flex"
+    previsualisationImage.style.display = "none"
+    btnReplaceFile.style.display = "none"
     btnSubmitNewWork.disabled = true
     btnSubmitNewWork.style.backgroundColor =  "#A7A7A7"
 }
@@ -354,9 +359,11 @@ function deleteRequest(id) {
     })
     .then(() => {
         deleteMessage.textContent = `le projet avec l'id: ${id} est supprimé avec succès`
+        deleteMessage.style.color = "#1D6154"
     })
     .catch(error => {
         deleteMessage.textContent = `Erreur lors de la suppression du projet avec l'id: ${id}. Type d'erreur : ${error.message}`
+        deleteMessage.style.color = "red"
     })
 }
 /********************************************************************/
@@ -404,7 +411,7 @@ async function getCategories() {
         displayCategories(categories)
         return categories
     } catch (error) {
-        console.log(error)
+        document.querySelector("#option-empty").innerText = `erreur serveur`
     }
 }
 
@@ -418,7 +425,7 @@ async function displayCategories(categories) {
         document.querySelector("#category-select").appendChild(categoryOption)
       }
     } catch (error) {
-       console.error()
+       document.querySelector("#option-empty").innerText = `error`
     }
 }
 
@@ -448,7 +455,7 @@ newImageCategory.addEventListener("change", () => {
 //focntion pour afficher l'image uploadée avant de l'envoyer
 newImageFile.addEventListener("change", function() {
     imgMiniature.classList.add("img-miniature")
-    btnReplaceFile.style.display = "block"
+    btnReplaceFile.style.display = "flex"
 
     const file = this.files[0]
     if (file) {
@@ -456,8 +463,9 @@ newImageFile.addEventListener("change", function() {
         reader.onload = function(e) {
             imgMiniature.src = e.target.result
         }
-        uploadedFileLabel.textContent = ""
-        uploadedFileLabel.appendChild(imgMiniature)
+        uploadedFileLabel.style.display = "none"
+        previsualisationImage.style.display = "flex"
+        previsualisationImage.prepend(imgMiniature)
         reader.readAsDataURL(file)
         activeSubmitBtn()
     }
@@ -479,6 +487,7 @@ formNewWork.addEventListener("submit", (e)=>{
 //fonction pour créer un nouveau work
 function createWork() {
     const formData = new FormData()
+    
     formData.append("image", newImageFile.files[0])
     formData.append("title", newImageTitle.value)
     formData.append("category", newImageCategory.value)
