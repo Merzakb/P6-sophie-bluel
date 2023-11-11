@@ -5,7 +5,7 @@ let works
 const BtnsCategories = document.querySelector("#btns-categories") //élement qui contient tous les boutons catégories
 const btnTous = document.createElement("button")//bouton tous
 let btnCategoryFilter // les autres boutons des catégories
-const btnExit = document.querySelector(".modal-wrapper-exit")
+const btnExit = document.querySelector(".delete-close")
 //mode édition 
 const loginBtn =  document.querySelector(".log-in-out")
 const btnEdit = document.querySelector(".edit")
@@ -21,7 +21,7 @@ const deleteMessage = document.getElementById("delete-message")
 //modal add
 const btnAddPicture = document.getElementById("add-picture")
 const btnModalBack = document.querySelector(".fa-arrow-left")
-const btnCloseFormModal = document.querySelector(".fa-x")
+const btnCloseFormModal = document.querySelector(".add-close")
 const formNewWork = document.getElementById("add-work")
 const newImageFile = document.querySelector("#file")
 const newImageTitle =  document.querySelector("#title")
@@ -29,8 +29,6 @@ const newImageCategory =  document.querySelector("#category-select")
 const btnSubmitNewWork = document.querySelector(".btn-valid")
 const uploadedFileLabel = document.querySelector(".img-upload-btn")
 const previsualisationImage = document.querySelector(".img-previsualisation")
-
-
 const imgMiniature = document.createElement("img")
 const btnReplaceFile = document.querySelector(".btn-replace-file")
 const addErrorMessage = document.querySelector(".add-error-message")
@@ -287,6 +285,7 @@ function closeModal(){
     uploadedFileLabel.style.display = "flex"
     previsualisationImage.style.display = "none"
     btnReplaceFile.style.display = "none"
+    addErrorMessage.innerText = ""
     btnSubmitNewWork.disabled = true
     btnSubmitNewWork.style.backgroundColor =  "#A7A7A7"
 }
